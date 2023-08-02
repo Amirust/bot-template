@@ -4,6 +4,7 @@ import I18nService from "@BotTemplate/locale/I18nService.js";
 import LoggerService from "@BotTemplate/logger/LoggerService.js";
 import EventPreprocessorService from "@BotTemplate/services/EventPreprocessorService.js";
 import CommandsPreprocessorService from "@BotTemplate/services/CommandsPreprocessorService.js";
+import { CommandsDeclaratorService } from "@BotTemplate/services/CommandsDeclaratorService";
 
 const intents = new IntentsBitField();
 Object.values(IntentsBitField.Flags).map((e: any) => intents.add(e));
@@ -14,6 +15,7 @@ export class Bot {
 	public i18n: I18nService = new I18nService();
 	public logger: LoggerService;
 	public commandPreprocessor!: CommandsPreprocessorService;
+	public commandsDeclarator!: CommandsDeclaratorService;
 
 	constructor() {
 		this.client = new Client({
@@ -26,10 +28,12 @@ export class Bot {
 
 	public async start() {
 		this.commandPreprocessor = new CommandsPreprocessorService();
+		this.commandsDeclarator = new CommandsDeclaratorService();
 		this.config = await ConfigService.init("../../config.json");
 
 		await (new EventPreprocessorService(this)).init();
 		await this.commandPreprocessor.init();
+		await this.commandsDeclarator.init("./dist/commands");
 		await this.i18n.init();
 		await this.client.login(this.config.get<string>("token"));
 	}

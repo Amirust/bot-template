@@ -1,13 +1,13 @@
 {
   "commands": {
     "ping": {
-      "text": "WS Ping: {0}ms\n Message Ping: {1}ms"
+      "text": "WS Ping: {ping}ms\n Message Ping: {timestamp}ms"
     }
   },
   "error": {
     "guildOnly": "Эта команда может быть использована только на сервере.",
-    "permissions": "У вас нет прав на использование этой команды.\nДля её использования вам нужно иметь такие права как: {0}.",
-    "unknown": "Произошла ошибка!\nСтек:\n{0}"
+    "permissions": "У вас нет прав на использование этой команды.\nДля её использования вам нужно иметь такие права как: {permissions}.",
+    "unknown": "Произошла ошибка!\nСтек:\n{stack}"
   },
   "permissions": {
     "CreateInstantInvite": "Создавать приглашение на сервер",

@@ -78,12 +78,12 @@ export default class CommandsPreprocessorService {
 				PermissionsResolverService.resolvePermissions(command.permissions, interaction.member as GuildMember);
 			} catch (e) {
 				return interaction.reply({
-					content: locale.resolve("error.permissions", [
-						PermissionsResolverService.getRequiredPermissionsName(command.permissions, interaction.member as GuildMember)
+					content: locale.resolve("error.permissions", {
+						permissions: PermissionsResolverService.getRequiredPermissionsName(command.permissions, interaction.member as GuildMember)
 							.map(e => locale.resolve(`permissions.${e}`))
 							.map(e => `\`${e}\``)
 							.join(", ")
-					]),
+					}),
 					ephemeral: true
 				});
 			}
@@ -107,7 +107,7 @@ export default class CommandsPreprocessorService {
 		}
 		catch (e: any) {
 			return interaction.reply({
-				content: locale.resolve("error.unknown", [e.stack]),
+				content: locale.resolve("error.unknown", { stack: e.stack }),
 				ephemeral: true
 			});
 		}
