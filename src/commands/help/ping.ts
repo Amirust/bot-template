@@ -7,6 +7,6 @@ export default class Ping implements Command {
 	readonly guildOnly: boolean = true;
 
 	async execute(interaction: CommandInteraction, locale: LocaleResolver): Promise<void> {
-		await interaction.reply(locale.resolve("text", { ping: `${interaction.client.ws.ping}`, timestamp: `${Date.now() - interaction.createdTimestamp}` }));
+		await interaction.reply(await locale.resolve("text", { ping: `${bot.client.ws.ping}`, timestamp: `${interaction.createdTimestamp - Date.now()}` }));
 	}
 }

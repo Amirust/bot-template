@@ -1,6 +1,7 @@
 {
   "token": "env-DISCORD_TOKEN",
-  "db": "env-MONGODB_URI",
+  "db": "env-MONGO",
+  "dbName": "smth",
   "version": "1.0.0",
   "rootUsers": ["965873006079524864"]
 }

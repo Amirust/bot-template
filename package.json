@@ -4,6 +4,7 @@
   "description": "Я сам не знаю что за хуйня не спрашивайте<br>\r Это просто темплейт для моих будущих или не будущих дискорд ботов, если вам сие говно очень понравиться - можете юзать я не против",
   "main": "index.js",
   "scripts": {
+    "build": "tsc --project tsconfig.json",
     "start": "node --no-warnings --loader esm-module-alias/loader index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -29,7 +30,7 @@
     "discord.js": "^14.11.0",
     "esm-module-alias": "^2.0.3",
     "i18next": "^22.5.1",
-    "mongodb": "^5.6.0"
+    "mongodb": "^5.7.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.59.9",

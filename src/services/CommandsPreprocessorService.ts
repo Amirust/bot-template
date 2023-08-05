@@ -60,7 +60,7 @@ export default class CommandsPreprocessorService {
 		return this.commands.find(e => e.name === name && e.parentOf === category);
 	}
 
-	preprocessCommand(interaction: CommandInteraction) {
+	async preprocessCommand(interaction: CommandInteraction) {
 		const command = this.getCommand(interaction.commandName);
 		if (!command)
 			return bot.logger.log(`CommandsPreprocessorService Command ${interaction.commandName} not found`, LogType.ERROR);
@@ -69,7 +69,7 @@ export default class CommandsPreprocessorService {
 
 		if (command.guildOnly && !interaction.guild)
 			return interaction.reply({
-				content: locale.resolve("error.guildOnly"),
+				content: await locale.resolve("error.guildOnly"),
 				ephemeral: true
 			});
 
@@ -78,7 +78,7 @@ export default class CommandsPreprocessorService {
 				PermissionsResolverService.resolvePermissions(command.permissions, interaction.member as GuildMember);
 			} catch (e) {
 				return interaction.reply({
-					content: locale.resolve("error.permissions", {
+					content: await locale.resolve("error.permissions", {
 						permissions: PermissionsResolverService.getRequiredPermissionsName(command.permissions, interaction.member as GuildMember)
 							.map(e => locale.resolve(`permissions.${e}`))
 							.map(e => `\`${e}\``)
@@ -107,7 +107,7 @@ export default class CommandsPreprocessorService {
 		}
 		catch (e: any) {
 			return interaction.reply({
-				content: locale.resolve("error.unknown", { stack: e.stack }),
+				content: await locale.resolve("error.unknown", { stack: e.stack }),
 				ephemeral: true
 			});
 		}

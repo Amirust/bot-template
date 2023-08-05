@@ -59,4 +59,16 @@ export default class LoggerService {
 			return logType === LogType.INFO || logType === LogType.WARN || logType === LogType.ERROR;
 		}
 	}
+
+	public debug(message: string) {
+		this.log(message, LogType.DEBUG);
+	}
+
+	public warn(message: string) {
+		this.log(message, LogType.WARN);
+	}
+
+	public error(message: string) {
+		this.log(message, LogType.ERROR);
+	}
 }

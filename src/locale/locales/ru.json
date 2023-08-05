@@ -1,7 +1,7 @@
 {
   "commands": {
     "ping": {
-      "text": "WS Ping: {ping}ms\n Message Ping: {timestamp}ms"
+      "text": "Пинг ВебСокета: {ping} мс\nПинг Сообщения: {timestamp} мс"
     }
   },
   "error": {

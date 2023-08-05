@@ -17,22 +17,23 @@ export default async function (message: Message): Promise<void> {
 	const obj = await new Promise<EvaledObject>(async resolve => {
 		try {
 			const evaled = await eval(code);
-			if ((message.channel as TextChannel).permissionsFor((message.guild as Guild).members.me!!)?.has(PermissionsBitField.Flags.ReadMessageHistory | PermissionsBitField.Flags.AddReactions))
-				await message.react("✅");
 
-			if (evaled === undefined) return;
+			if (evaled === undefined) resolve({ ok: true, text: "No output" });
 
 			let text = inspect(evaled, { depth: 0, maxArrayLength: 50 });
 			if (text.length > 1990) text = "Ответ занимает больше чем позволенно дискордом";
 			resolve({ ok: true, text });
 		} catch (err: any) {
-			if ((message.channel as TextChannel).permissionsFor((message.guild as Guild).members.me!!)?.has(PermissionsBitField.Flags.ReadMessageHistory | PermissionsBitField.Flags.AddReactions))
-				await message.react("❌");
 			resolve({ ok: false, text: err.toString() });
 		}
 	});
 
 	const after = process.hrtime.bigint();
+
+	if (obj.ok && (message.channel as TextChannel).permissionsFor((message.guild as Guild).members.me!!)?.has(PermissionsBitField.Flags.ReadMessageHistory | PermissionsBitField.Flags.AddReactions))
+		await message.react("✅");
+	else if ((message.channel as TextChannel).permissionsFor((message.guild as Guild).members.me!!)?.has(PermissionsBitField.Flags.ReadMessageHistory | PermissionsBitField.Flags.AddReactions))
+		await message.react("❌");
 
 	const embed = new EmbedBuilder()
 		.setDescription(`\`\`\`js\n${obj.text}\`\`\``)

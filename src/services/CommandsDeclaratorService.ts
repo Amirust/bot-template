@@ -18,12 +18,13 @@ export class CommandsDeclaratorService {
 			if (stat.isDirectory()) {
 				await this.register(path.join(directory, file));
 			} else {
-				await this.registerDeclaration(path.join(directory, file));
+				await this.registerDeclaration(directory, file);
 			}
 		}
 	}
 
-	private async registerDeclaration(filePath: string) {
+	private async registerDeclaration(directory: string, file: string) {
+		const filePath = `@BotTemplate/commands/${path.relative("./dist/commands", path.join(directory, file))}`.replace(/\\/g, "/");
 		const fileInstance = await import(filePath);
 		const isCommandDeclaration = path.basename(filePath).startsWith("declaration");
 		const isCommandCategoryDeclaration = "category" in fileInstance;

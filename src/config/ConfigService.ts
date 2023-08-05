@@ -18,7 +18,7 @@ export default class ConfigService {
 					: key
 			];
 			if (!envValue) throw new Error(`Environment variable ${key} not found`);
-			return envValue as T;
+			return envValue.replaceAll("\"", "") as T;
 		} else {
 			if (!value) throw new Error(`Config key ${key} not found`);
 			return value as T;

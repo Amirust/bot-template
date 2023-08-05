@@ -5,7 +5,11 @@ export default class I18nService {
 	public i18n = i18next.init({
 		fallbackLng: "ru",
 		lng: "ru",
-		resources: {}
+		resources: {},
+		interpolation: {
+			prefix: "{",
+			suffix: "}"
+		}
 	});
 
 	constructor() {}
@@ -22,7 +26,8 @@ export default class I18nService {
 		return this;
 	}
 
-	translate(lng: string, key: string, ...args: any[]) {
-		return i18next.t(key, { lng, args });
+	async translate(lng: string, key: string, args?: { [key: string]: string }) {
+		if (i18next.language !== lng) await i18next.changeLanguage(lng);
+		return i18next.t(key, args ?? {});
 	}
 }
