@@ -8,6 +8,7 @@ import {
 	MongoClient
 } from "mongodb";
 import { CacheProvider } from "@BotTemplate/types/CacheProvider";
+import { IDBCategory } from "@BotTemplate/types/IDBCategory";
 
 export default class MongoDBPlugin implements IPlugin {
 	public name: string = "mongodb";
@@ -74,7 +75,7 @@ export default class MongoDBPlugin implements IPlugin {
 	}
 }
 
-export class Collection {
+export class Collection implements IDBCategory {
 	public readonly dbCollection;
 
 	constructor(dbCollection: MongoCollection) {
@@ -97,6 +98,7 @@ export class Collection {
 	}
 
 	async find<T extends Document>(filter: { [key: string]: string }): Promise<T[]> {
+		if (Object.keys(filter).length === 0) return await this.dbCollection.find<T>({}).toArray();
 		return bot.cache.findByOwnProperties<T>(filter);
 	}
 
