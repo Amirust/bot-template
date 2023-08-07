@@ -12,7 +12,6 @@ import { IDBCategory } from "@BotTemplate/types/IDBCategory";
 
 export default class MongoDBPlugin implements IPlugin {
 	public name: string = "mongodb";
-	public configRequired: boolean = true;
 	private dbName: string;
 	private client: MongoClient;
 	private cache: CacheProvider;

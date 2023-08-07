@@ -16,6 +16,9 @@ interface CacheProvider {
 	set<T>(key: string, value: T): Promise<void>;
 	delete(key: string): Promise<void>;
 	clear(): Promise<void>;
+
+	findByOwnProperties<T>(properties: { [key: string]: string }): T[];
+	deleteByOwnProperties(properties: { [key: string]: string }): void;
 }
 
 export {

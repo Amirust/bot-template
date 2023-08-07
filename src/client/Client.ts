@@ -7,7 +7,8 @@ import CommandsPreprocessorService from "@BotTemplate/services/CommandsPreproces
 import { CommandsDeclaratorService } from "@BotTemplate/services/CommandsDeclaratorService.js";
 import { IPlugin } from "@BotTemplate/types/IPlugin";
 import NativeCacheProvider from "@BotTemplate/cache/NativeCacheProvider.js";
-import MongoDBPlugin, { Collection } from "@BotTemplate/plugins/MongoDB.plugin.js";
+import { Collection } from "@BotTemplate/plugins/MongoDB.plugin.js";
+import PluginsProcessorService from "@BotTemplate/services/PluginsProcessorService.js";
 
 const intents = new IntentsBitField();
 Object.values(IntentsBitField.Flags).map((e: any) => intents.add(e));
@@ -36,16 +37,13 @@ export class Bot {
 		this.commandPreprocessor = new CommandsPreprocessorService();
 		this.commandsDeclarator = new CommandsDeclaratorService();
 		this.config = await ConfigService.init("../../config.json");
-		const mongo = new MongoDBPlugin();
 
+		await (new PluginsProcessorService().init());
 		await (new EventPreprocessorService(this)).init();
 		await this.commandPreprocessor.init();
 		await this.commandsDeclarator.init("./dist/commands");
 		await this.i18n.init();
 		this.cache = new NativeCacheProvider(120_000);
-		await mongo.init();
 		await this.client.login(this.config.get<string>("token"));
-
-		await mongo.postSetup();
 	}
 }
