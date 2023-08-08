@@ -11,12 +11,9 @@ export default class NativeCacheProvider implements CacheProvider {
 		bot.logger.log("NativeCacheProvider initialized");
 
 		setInterval(() => {
-			const now = Date.now();
-			for (const [key, value] of this.cache.entries()) {
-				if (value.expires < now) {
-					this.cache.delete(key);
-				}
-			}
+			this.cache.forEach((value, key) => {
+				if (value.expires < Date.now()) this.cache.delete(key);
+			});
 		} , 10_000);
 	}
 
@@ -25,9 +22,7 @@ export default class NativeCacheProvider implements CacheProvider {
 	}
 
 	async get<T>(key: string): Promise<T | null> {
-		const value = this.cache.get(key);
-		if (value === undefined) return null;
-		return value.value as T;
+		return this.cache.get(key)?.value as T ?? null;
 	}
 
 	set<T>(key: string, value: T): Promise<void> {
