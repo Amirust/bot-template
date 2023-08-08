@@ -6,9 +6,8 @@ import EventPreprocessorService from "@BotTemplate/services/EventPreprocessorSer
 import CommandsPreprocessorService from "@BotTemplate/services/CommandsPreprocessorService.js";
 import { CommandsDeclaratorService } from "@BotTemplate/services/CommandsDeclaratorService.js";
 import { IPlugin } from "@BotTemplate/types/IPlugin";
-import NativeCacheProvider from "@BotTemplate/cache/NativeCacheProvider.js";
-import { Collection } from "@BotTemplate/plugins/MongoDB.plugin.js";
 import PluginsProcessorService from "@BotTemplate/services/PluginsProcessorService.js";
+import { EntityMetadata, MongoRepository } from "typeorm";
 
 const intents = new IntentsBitField();
 Object.values(IntentsBitField.Flags).map((e: any) => intents.add(e));
@@ -21,8 +20,7 @@ export class Bot {
 	public commandPreprocessor!: CommandsPreprocessorService;
 	public commandsDeclarator!: CommandsDeclaratorService;
 	public plugins: Map<string, IPlugin> = new Map();
-	public cache: NativeCacheProvider;
-	public store: Map<string, Collection> = new Map();
+	public store: Map<string, MongoRepository<EntityMetadata>> = new Map();
 
 	constructor() {
 		this.client = new Client({
@@ -43,7 +41,6 @@ export class Bot {
 		await this.commandPreprocessor.init();
 		await this.commandsDeclarator.init("./dist/commands");
 		await this.i18n.init();
-		this.cache = new NativeCacheProvider(120_000);
 		await this.client.login(this.config.get<string>("token"));
 	}
 }

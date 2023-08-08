@@ -23,9 +23,8 @@ export default class PluginsProcessorService {
 
 	async registerPlugin(directory: string, file: string): Promise<void> {
 		const filePath = `@BotTemplate/plugins/${path.relative("./dist/plugins", path.join(directory, file))}`.replace(/\\/g, "/");
-		const plugin = await import(filePath);
-		const pluginInstance: IPlugin = new plugin.default();
-		await pluginInstance.init();
-		bot.plugins.set(pluginInstance.name, pluginInstance);
+		const plugin: IPlugin = (await import(filePath)).default();
+		await plugin.init();
+		bot.plugins.set(plugin?.registerAs ?? plugin.name, plugin);
 	}
 }
