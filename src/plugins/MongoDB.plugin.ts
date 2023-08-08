@@ -91,50 +91,30 @@ export class Collection implements IDBCategory {
 			const cached = bot.cache.findByOwnProperties<T>(filter);
 			if (cached?.length > 0) return cached[0];
 		}
-		const res = await this.dbCollection.findOne<T>(filter);
-		if (res !== null) await bot.cache.set(res._id.toString(), res);
-		return res as T;
+		return await this.dbCollection.findOne<T>(filter);
 	}
 
 	async find<T extends Document>(filter: { [key: string]: string }): Promise<T[]> {
-		if (Object.keys(filter).length === 0) return await this.dbCollection.find<T>({}).toArray();
-		return bot.cache.findByOwnProperties<T>(filter);
+		return await this.dbCollection.find<T>(filter).toArray();
 	}
 
 	async insertOne<T extends Document>(doc: T): Promise<void> {
-		const result = await this.dbCollection.insertOne(doc);
-		await bot.cache.set(result.insertedId.toString(), doc);
+		await this.dbCollection.insertOne(doc);
 	}
 
 	async insertMany<T extends Document>(docs: T[]): Promise<void> {
-		const result = await this.dbCollection.insertMany(docs);
-		for (let i = 0; i < docs.length; i++) {
-			await bot.cache.set(result.insertedIds[i].toString(), docs[i]);
-		}
+		await this.dbCollection.insertMany(docs);
 	}
 
-	async updateOne<T extends Document>(filter: { [key: string]: string }, update: { [key: string]: string }): Promise<void> {
-		const result = await this.dbCollection.updateOne(filter, update);
-		if (result.modifiedCount === 0) return;
-		const cached = bot.cache.findByOwnProperties<T>(filter);
-		if (cached) {
-			const newValue = { ...cached[0], ...update };
-			await bot.cache.set(newValue._id.toString(), newValue);
-		} else {
-			const newValue = await this.findOne<T>(filter);
-			if (newValue !== null) await bot.cache.set(newValue._id.toString(), newValue);
-		}
+	async updateOne(filter: { [key: string]: string }, update: { [key: string]: string }): Promise<void> {
+		await this.dbCollection.updateOne(filter, update);
 	}
 
 	async deleteOne(filter: { [key: string]: string }): Promise<void> {
-		const result = await this.dbCollection.deleteOne(filter);
-		if (result.deletedCount === 0) return;
-		bot.cache.deleteByOwnProperties(filter);
+		await this.dbCollection.deleteOne(filter);
 	}
 
 	async deleteMany(filter: { [key: string]: string }): Promise<void> {
-		const result = await this.dbCollection.deleteMany(filter);
-		if (result.deletedCount === 0) return;
-		bot.cache.deleteByOwnProperties(filter);
+		await this.dbCollection.deleteMany(filter);
 	}
 }
