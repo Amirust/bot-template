@@ -91,11 +91,15 @@ export class Collection implements IDBCategory {
 			const cached = bot.cache.findByOwnProperties<T>(filter);
 			if (cached?.length > 0) return cached[0];
 		}
-		return await this.dbCollection.findOne<T>(filter);
+		const res = await this.dbCollection.findOne<T>(filter);
+		if (res !== null) await bot.cache.set(res._id.toString(), res);
+		return res as T;
 	}
 
 	async find<T extends Document>(filter: { [key: string]: string }): Promise<T[]> {
-		return await this.dbCollection.find<T>(filter).toArray();
+		const results = await this.dbCollection.find<T>({}).toArray();
+		results.map(async result => await bot.cache.set(result._id.toString(), result));
+		return results;
 	}
 
 	async insertOne<T extends Document>(doc: T): Promise<void> {
