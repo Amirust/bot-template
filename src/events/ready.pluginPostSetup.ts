@@ -1,3 +1,4 @@
 export default function (): void {
-	[...bot.plugins.values()].forEach(e => e.postSetup?.());
+	for (let plugin of bot.plugins.values())
+		if (plugin.postSetup) plugin.postSetup().then(() => null);
 }

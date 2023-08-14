@@ -1,12 +1,12 @@
 import { Client, IntentsBitField, Partials } from "discord.js";
-import ConfigService from "@BotTemplate/config/ConfigService.js";
-import I18nService from "@BotTemplate/locale/I18nService.js";
-import LoggerService from "@BotTemplate/logger/LoggerService.js";
-import EventPreprocessorService from "@BotTemplate/services/EventPreprocessorService.js";
-import CommandsPreprocessorService from "@BotTemplate/services/CommandsPreprocessorService.js";
-import { CommandsDeclaratorService } from "@BotTemplate/services/CommandsDeclaratorService.js";
+import ConfigService from "@BotTemplate/config/ConfigService";
+import I18nService from "@BotTemplate/locale/I18nService";
+import LoggerService from "@BotTemplate/logger/LoggerService";
+import EventPreprocessorService from "@BotTemplate/services/EventPreprocessorService";
+import CommandsPreprocessorService from "@BotTemplate/services/CommandsPreprocessorService";
+import CommandsDeclaratorService from "@BotTemplate/services/CommandsDeclaratorService";
 import { IPlugin } from "@BotTemplate/types/IPlugin";
-import PluginsProcessorService from "@BotTemplate/services/PluginsProcessorService.js";
+import PluginsProcessorService from "@BotTemplate/services/PluginsProcessorService";
 import { EntityMetadata, MongoRepository } from "typeorm";
 
 const intents = new IntentsBitField();
@@ -39,8 +39,8 @@ export class Bot {
 		await (new PluginsProcessorService().init());
 		await (new EventPreprocessorService(this)).init();
 		await this.commandPreprocessor.init();
-		await this.commandsDeclarator.init("./dist/commands");
 		await this.i18n.init();
-		await this.client.login(this.config.get<string>("token"));
+		await this.client.login(this.config.get<string>("token")).catch(e => this.logger.error(e));
+		await this.commandsDeclarator.init("./dist/commands");
 	}
 }

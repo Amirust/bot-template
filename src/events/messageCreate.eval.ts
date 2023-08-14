@@ -10,10 +10,11 @@ export default async function (message: Message): Promise<void> {
 	if (!bot.config.get<string[]>("rootUsers").includes(message.author.id)) return;
 	if (!message.content.startsWith("??eval")) return;
 
-	const before = process.hrtime.bigint();
-
 	let code = message.content.slice(7).replace(/(```(.+)?)?/g, "");
 	if (code.includes("await")) code = `(async () => {${code}})()`;
+
+	const before = process.hrtime.bigint();
+
 	const obj = await new Promise<EvaledObject>(async resolve => {
 		try {
 			const evaled = await eval(code);

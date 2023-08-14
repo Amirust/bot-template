@@ -9,8 +9,7 @@ export class PermissionsResolverService {
 		});
 	}
 
-	static getRequiredPermissionsName(permissions: string[], member: GuildMember): string[] {
-		const memberPermissions = member.permissions.toArray();
-		return permissions.filter(permission => !memberPermissions.includes(<PermissionsString>permission));
+	static getRequiredPermissionsName(requiredPermissions: PermissionsString[], member: GuildMember): string[] {
+		return requiredPermissions.filter(permission => !member.permissions.has(permission));
 	}
 }

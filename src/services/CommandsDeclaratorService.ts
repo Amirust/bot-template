@@ -4,7 +4,7 @@ import path from "node:path";
 import { CommandDeclaration } from "@BotTemplate/types/CommandDeclaration";
 import { CommandCategoryDeclaration } from "@BotTemplate/types/CommandCategoryDeclaration";
 
-export class CommandsDeclaratorService {
+export default class CommandsDeclaratorService {
 	public declarations: Collection<string, CommandDeclaration | CommandCategoryDeclaration> = new Collection();
 
 	public async init(directory: string) {
@@ -25,7 +25,7 @@ export class CommandsDeclaratorService {
 
 	private async registerDeclaration(directory: string, file: string) {
 		const filePath = `@BotTemplate/commands/${path.relative("./dist/commands", path.join(directory, file))}`.replace(/\\/g, "/");
-		const fileInstance = await import(filePath);
+		const fileInstance = require(filePath).default;
 		const isCommandDeclaration = path.basename(filePath).startsWith("declaration");
 		const isCommandCategoryDeclaration = "category" in fileInstance;
 		if (isCommandDeclaration) {

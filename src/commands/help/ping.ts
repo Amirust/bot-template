@@ -1,6 +1,6 @@
 import { Command } from "@BotTemplate/types/Command";
 import { CommandInteraction } from "discord.js";
-import { LocaleResolver } from "@BotTemplate/locale/LocaleResolver.js";
+import { LocaleResolver } from "@BotTemplate/locale/LocaleResolver";
 
 export default class Ping implements Command {
 	readonly name: string = "ping";

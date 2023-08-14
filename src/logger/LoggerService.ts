@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-import { LogLevel, LogType } from "@BotTemplate/types/Logger.js";
+import { LogLevel, LogType } from "@BotTemplate/types/Logger";
 import npath from "node:path";
 
 export default class LoggerService {

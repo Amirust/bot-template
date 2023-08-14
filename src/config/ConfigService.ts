@@ -4,7 +4,7 @@ export default class ConfigService {
 	constructor(public config: IConfig) {}
 
 	static async init(path: string): Promise<ConfigService> {
-		const config = (await import(path, { assert: { type: "json" } })).default;
+		const config = require(path);
 		return new ConfigService(config);
 	}
 

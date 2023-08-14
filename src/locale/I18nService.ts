@@ -18,7 +18,7 @@ export default class I18nService {
 		const files = await fs.readdir("./dist/locale/locales");
 		for (const file of files) {
 			const locale = file.split(".")[0];
-			const resource = await import(`@BotTemplate/locale/locales/${file}`, { assert: { type: "json" } });
+			const resource = (await import(`@BotTemplate/locale/locales/${file}`));
 			i18next.addResourceBundle(locale, "translation", resource.default);
 		}
 

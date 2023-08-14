@@ -2,10 +2,10 @@ import { ChatInputCommandInteraction, Collection, CommandInteraction, GuildMembe
 import { Command } from "@BotTemplate/types/Command";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { CommandClassValidator } from "@BotTemplate/validator/CommandClassValidator.js";
-import { LocaleResolver } from "@BotTemplate/locale/LocaleResolver.js";
-import { PermissionsResolverService } from "@BotTemplate/permissions/PermissionsResolverService.js";
-import { LogType } from "@BotTemplate/types/Logger.js";
+import { CommandClassValidator } from "@BotTemplate/validator/CommandClassValidator";
+import { LocaleResolver } from "@BotTemplate/locale/LocaleResolver";
+import { PermissionsResolverService } from "@BotTemplate/permissions/PermissionsResolverService";
+import { LogType } from "@BotTemplate/types/Logger";
 
 class CommandsLoaderService {
 	public static commands: Collection<string, Command> = new Collection();
@@ -13,7 +13,7 @@ class CommandsLoaderService {
 	public static async init(path: string): Promise<Collection<string, Command>> {
 		bot.logger.log(`CommandsLoaderService initialized with ${path} path and started loading commands`);
 		await this.register(path);
-		bot.logger.log(`CommandsLoaderService loaded ${this.commands.size} commands`);
+		bot.logger.log(`CommandsLoaderService loaded ${this.commands.size} commands\n${this.commands.map(e => `${" ".repeat(24)}*  Command ${e.name}`).join("\n")}`);
 		return this.commands;
 	}
 
@@ -35,10 +35,9 @@ class CommandsLoaderService {
 		const fileInstance = (await import(filePath)).default;
 		const command = new fileInstance() as Command;
 		if (!CommandClassValidator.validate(command)) {
-			bot.logger.log(`CommandsLoaderService Command ${command.name} is not valid`, LogType.ERROR);
+			bot.logger.error(`CommandsLoaderService Command ${command.name} is not valid`);
 			return;
 		}
-		bot.logger.log(`CommandsLoaderService Command ${command.name} loaded`);
 		this.commands.set(command.name, command);
 		return command;
 	}
@@ -73,14 +72,17 @@ export default class CommandsPreprocessorService {
 				ephemeral: true
 			});
 
-		if (command.permissions) {
+		if (command.permissions || command.botPermissions) {
+			let userPermsPassed = false;
+			let botPermsPassed = false;
 			try {
-				PermissionsResolverService.resolvePermissions(command.permissions, interaction.member as GuildMember);
-			} catch (e) {
+				if (command.permissions) PermissionsResolverService.resolvePermissions(command.permissions, interaction.member as GuildMember); userPermsPassed = true;
+				if (command.botPermissions) PermissionsResolverService.resolvePermissions(command.botPermissions, interaction.guild?.members.me as GuildMember); botPermsPassed = true;
+			} catch (e: any) {
 				return interaction.reply({
-					content: await locale.resolve("error.permissions", {
-						permissions: PermissionsResolverService.getRequiredPermissionsName(command.permissions, interaction.member as GuildMember)
-							.map(e => locale.resolve(`permissions.${e}`))
+					content: await locale.resolve(botPermsPassed ? userPermsPassed ? "" : "error.permissions" : "error.botPermissions", {
+						permissions: (await Promise.all(PermissionsResolverService.getRequiredPermissionsName((botPermsPassed ? userPermsPassed ? [] : command.permissions : command.botPermissions) ?? [], (botPermsPassed ? userPermsPassed ? [] : interaction.member : interaction.guild?.members.me) as GuildMember)
+							.map(e => locale.resolve(`permissions.${e}`))))
 							.map(e => `\`${e}\``)
 							.join(", ")
 					}),

@@ -5,19 +5,20 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc --project tsconfig.json",
-    "start": "node --no-warnings --loader esm-module-alias/loader index.js",
+    "start": "node --no-warnings index.js",
+    "lint": "eslint ./src --ext .ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Amirust/bot-template.git"
   },
-  "aliases": {
+  "_moduleAliases": {
     "@src": "dist",
     "@BotTemplate": "dist",
     "@root": "./"
   },
-  "type": "module",
+  "type": "commonjs",
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -28,8 +29,8 @@
   "dependencies": {
     "discord-api-types": "^0.37.43",
     "discord.js": "^14.11.0",
-    "esm-module-alias": "^2.0.3",
     "i18next": "^22.5.1",
+    "module-alias": "^2.2.3",
     "mongodb": "^5.7.0",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.17"

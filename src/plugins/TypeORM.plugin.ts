@@ -22,9 +22,9 @@ export default class TypeORMPlugin implements IPlugin {
 	}
 
 	async postSetup(): Promise<void> {
-		await this.dataSource.initialize().then(() => bot.logger.log("TypeORM plugin connected to database"));
+		await this.dataSource.initialize().then(() => bot.logger.log("TypeORM plugin connected to database")).catch(err => bot.logger.error(err));
 		this.dataSource.entityMetadatas.map((metadata: EntityMetadata) => bot.store.set(metadata.name, this.dataSource.getMongoRepository(metadata.name)));
-		bot.logger.log(`TypeORM plugin cache added to store ${this.dataSource.entityMetadatas.length} collections`);
+		bot.logger.log(`TypeORM plugin added to store ${this.dataSource.entityMetadatas.length} collections`);
 
 	}
 

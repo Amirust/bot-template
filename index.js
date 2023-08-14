@@ -1,4 +1,6 @@
-import { Bot } from "./dist/client/Client.js";
+require("module-alias/register");
+
+const { Bot } = require("./dist/client/Client.js");
 
 (async () => {
 	global.bot = new Bot();
